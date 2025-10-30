@@ -16,8 +16,8 @@
   --chart-bg-dark: #2d2d2d;
   --history-bg-light: #ffffff;
   --history-bg-dark: #2d2d2d;
-  --positive-color: rgba(4, 155, 135, 1);
-  --negative-color: rgb(212, 16, 16);
+  --positive-color: #03dd86ff;
+  --negative-color: #ff4d4d;
   --btn-bg: purple;
   --btn-hover: rgb(84, 2, 84);
   --btn-disabled: #ccc;
@@ -282,10 +282,11 @@ body { font-family: "Poppins", sans-serif; }
   justify-content: space-between;
 }
 
+/* ---------------- ATM Highlight ---------------- */
 .atm-row {
   background-color: #ffeb99; /* light yellow */
   font-weight: bold;
-  border: 2px solid #ffb300; 
+  border: 2px solid #ffb300;
   transition: 0.3s ease;
 }
 
@@ -293,6 +294,7 @@ body { font-family: "Poppins", sans-serif; }
   background-color: #ffe066;
 }
 
+/* ---------------- Option Row Inputs ---------------- */
 .option-row input {
   width: 140px;
   padding: 10px;
@@ -317,6 +319,7 @@ body { font-family: "Poppins", sans-serif; }
   text-align: center;
 }
 
+/* ---------------- Diff Cell Colors ---------------- */
 .final-value {
   font-weight: 600;
   text-align: center;
@@ -328,11 +331,10 @@ body { font-family: "Poppins", sans-serif; }
   color: var(--negative-color);
 }
 
-/* 🟣 ATM (highlighted & bold) */
+/*  ATM (highlighted & bold) */
 .final-value.atm {
-  color: #be8704;
+  color: #c58b05;
   font-weight: 800;
-  text-shadow: 0 0 1px #fac344;
 }
 
 /*  Above ATM */
@@ -340,12 +342,13 @@ body { font-family: "Poppins", sans-serif; }
   color: var(--positive-color);
 }
 
-/* Optional subtle glow for hover */
+/*  Subtle hover glow */
 .final-value:hover {
   text-shadow: 0 0 1px currentColor;
 }
 
-  #totals {
+/* ---------------- Totals Section ---------------- */
+#totals {
   margin-top: 15px;
   padding: 14px 22px;
   font-size: 22px;
@@ -359,12 +362,22 @@ body { font-family: "Poppins", sans-serif; }
   transition: all 0.3s ease;
 }
 
+#detailsBox table th, #detailsBox table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px;
+}
+
+#detailsBox table th {
+  font-weight: bold;
+}
+
 #totals i {
   margin-right: 8px;
   font-size: 20px;
   color: #b695ff;
 }
 
+/*  Positive/Negative glowing numbers */
 #totals .positive {
   color: #00ff99;
   text-shadow: 0 0 6px rgba(0, 255, 153, 0.6);
