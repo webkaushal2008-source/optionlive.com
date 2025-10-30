@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TradeLive</title>
+
+  <!-- Favicon -->
+  <link rel="website icon" type="image/png"
+    href="images/Logo!.png" />
+
+  <!-- Boxicons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Chart.js DataLabels Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- totalicon -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></script>
+</head>
+<body>
+
+      <!-- 🔥 Scrolling Banner -->
+  <div id="wk-banner" class="wk-banner" role="region" aria-label="WebKaushal promotion banner">
+    <div class="wk-banner__inner">
+      <div class="wk-banner__marquee">
+        <span>
+          This <strong> TradeLive </strong> Is An <strong> Option Trading Tool </strong>. This Tool Can Be Used To <strong> Predict </strong> The Direction Of The Market.
+        </span>
+      </div>
+      <div class="share-container">
+        <button id="wk-banner-close" class="wk-banner__close" aria-label="Share banner" title="Share">
+          <!-- Share Icon -->
+          <i class='bx bx-share-alt' style="font-size: 22px; color: white;"></i>
+        </button>
+
+        <!-- Share Menu -->
+        <div id="shareMenu" class="share-menu">
+          <a href="#" id="shareWhatsapp" target="_blank"><i class='bx bxl-whatsapp'></i> WhatsApp</a>
+          <a href="#" id="shareTelegram" target="_blank"><i class='bx bxl-telegram'></i> Telegram</a>
+          <a href="#" id="shareFacebook" target="_blank"><i class='bx bxl-facebook'></i> Facebook</a>
+          <a href="#" id="share" target="_blank"><i class='bx bxl-twitter'></i> Twitter</a>
+          <a href="#" id="shareLinkedIn" target="_blank"><i class='bx bxl-linkedin'></i> LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+  <header class="header">
+    <div class="header-content">
+      <h1>TradeLive.</h1>
+      <div class="header-buttons">
+        <button id="disclaimerBtn" class="btn header-btn">
+          <i class='bx bx-info-circle'></i> Disclaimer
+        </button>
+        <button id="themeToggleBtn" class="btn header-btn">
+          <i class='bx bx-moon'></i> Dark Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="form-box">
+      <form onsubmit="return false;">
+        <div class="Symbol-input">
+          <input type="text" id="symbolNameInput" placeholder="Enter Symbol Name" class="symbol-name-input" />
+        </div>
+
+        <div class="option-row header-row">
+          <div class="col-title">Strike Price</div>
+          <div class="col-title">Call Value</div>
+          <div class="col-title">Put Value</div>
+          <div class="col-title">Final Value</div>
+        </div>
+
+        <div class="option-rows" id="optionRows"></div>
+
+        <div class="add-row-container">
+          <button type="button" class="btn" id="addRowBtn">
+            <i class='bx bx-plus'></i> Add Strike
+          </button>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn" id="calculateBtn">
+            <i class='bx bx-calculator'></i> Calculate
+          </button>
+          <button type="button" class="btn" id="graphBtn" disabled>
+            <i class='bx bx-show'></i> Show Graph
+          </button>
+          <button type="button" class="btn" onclick="downloadPDF()">
+            <i class='bx bx-download'></i> Download
+          </button>
+          <button type="button" class="btn" onclick="showHistory()">
+            <i class='bx bx-history'></i> History
+          </button>
+          <button type="button" class="btn" onclick="refreshPage()">
+            <i class='bx bx-refresh'></i> Refresh
+          </button>
+        </div>
+
+        <div class="chart-container" id="chartArea">
+          <canvas id="ivChart"></canvas>
+        </div>
+
+        <div id="historyList" class="history-list">
+          <h3>Calculation History</h3>
+          <div id="historyItems"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- New Big Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <!-- About -->
+      <div class="footer-col">
+        <h3>TradeLive.</h3>
+        <p>
+          TradeLive is an option trading tool. This tool can be used to predict the direction of the market. It is an educational tool based on the option chain. 
+          Stay connected for the latest updates!
+        </p>
+        <div class="social-links">
+          <a href="#"><i class='bx bxl-facebook'></i></a>
+          <a href="#"><i class='bx bxl-whatsapp'></i></a>
+          <a href="#"><i class='bx bxl-instagram'></i></a>
+          <a href="#"><i class='bx bxl-linkedin'></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h4>Smart Links</h4>
+        <ul>
+          <li><a href="#">Pretection Tool</a></li>
+          <li><a href="#" onclick="showAbout()">About</a></li>
+          <li><a href="#" onclick="showRules()">How to Use?</a></li>
+          <li><a href="#" onclick="showPrivacy()">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Videos -->
+      <div class="footer-col">
+        <h4>Videos</h4>
+        <ul>
+          <li><a href="#">How To Use...</a></li>
+          <li><a href="#">How To Pretect...</a></li>
+          <li><a href="#">How To Trade...</a></li>
+          <li><a href="#">Live Trade...</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><i class='bx bxl-whatsapp'></i> +91 7425929501</li>
+          <li><i class='bx bxs-envelope'></i> webkaushal2008@gmail.com</li>
+          <li><i class='bx bxs-map'></i> Ajmer, India</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 TradeLive By WebKaushal. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
