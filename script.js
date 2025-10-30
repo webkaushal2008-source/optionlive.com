@@ -220,7 +220,7 @@ function calculateIV() {
     const putIV = parseFloat(putInput?.value);
     const callIV = parseFloat(callInput?.value);
 
-    // reset all styling
+    // Reset styling
     diffCell.className = "final-value";
 
     if (!isNaN(strike) && !isNaN(callIV) && !isNaN(putIV)) {
@@ -255,58 +255,119 @@ function calculateIV() {
 
   if (graphBtn) graphBtn.disabled = !validData;
 
-  // ✅ Show totals
+  //  Show totals
   showTotals(upperSum, lowerSum);
 }
 
-
-// --------------- Stylish Totals Display (with icons) ------------------------
-function showTotals(upperSum, lowerSum) {
-  let totalsDiv = document.getElementById("totals");
-  if (!totalsDiv) {
-    totalsDiv = document.createElement("div");
-    totalsDiv.id = "totals";
-    addRowBtn.parentElement.insertBefore(totalsDiv, addRowBtn.nextSibling);
-  }
-
-  const result = (upperSum - lowerSum).toFixed(2);
-  const formatVal = (val) => (val >= 0 ? `+${val.toFixed(2)}` : val.toFixed(2));
-
-  totalsDiv.innerHTML = `
-    <i class="fa-solid fa-arrow-trend-up"></i> 
-    Above ATM = <span class="positive">${formatVal(upperSum)}</span> |
-    <i class="fa-solid fa-arrow-trend-down"></i> 
-    Below ATM = <span class="negative">${formatVal(lowerSum)}</span> |
-    <i class="fa-solid fa-scale-balanced"></i> 
-    Result = <span class="${result >= 0 ? "positive" : "negative"}">
-      ${formatVal(parseFloat(result))}
-    </span>
-  `;
-}
+// ---------------- Stylish Totals Display (with toggle & history) ------------------------
+let historyData = []; // to store total difference history
 
 function showTotals(totalPositive, totalNegative) {
   let totalsDiv = document.getElementById("totals");
   if (!totalsDiv) {
     totalsDiv = document.createElement("div");
     totalsDiv.id = "totals";
-    totalsDiv.style.marginTop = "10px";
+    totalsDiv.style.marginTop = "15px";
     totalsDiv.style.fontWeight = "bold";
     totalsDiv.style.fontSize = "20px";
     totalsDiv.style.textAlign = "center";
-    // Insert totals after Add Row button
+    totalsDiv.style.position = "relative";
     addRowBtn.parentElement.insertBefore(totalsDiv, addRowBtn.nextSibling);
   }
 
-  // Calculate total difference: subtract smaller value from larger value
+  // calculate total difference
   const totalDifference = Math.abs(totalPositive - Math.abs(totalNegative)).toFixed(2);
+  const color =
+    totalPositive >= Math.abs(totalNegative)
+      ? "var(--positive-color)"
+      : "var(--negative-color)";
 
+  // 🔥 totals content with arrow
   totalsDiv.innerHTML = `
-    Total (Call)  <span style="color:var(--positive-color)">${totalPositive.toFixed(2)}</span> | 
-    Total (Put)  <span style="color:var(--negative-color)">${totalNegative.toFixed(2)}</span> | 
-    Total Difference  <span style="color:${
-      totalPositive >= Math.abs(totalNegative) ? 'var(--positive-color)' : 'var(--negative-color)'
-    }">${totalDifference}</span>
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+      <div>
+        Total (Call) <span style="color:var(--positive-color)">${totalPositive.toFixed(2)}</span> | 
+        Total (Put) <span style="color:var(--negative-color)">${totalNegative.toFixed(2)}</span> | 
+        Total Difference <span style="color:${color}">${totalDifference}</span>
+      </div>
+      <button id="toggleDetails" style="
+        background:none;
+        border:none;
+        cursor:pointer;
+        font-size:20px;
+        color:white;
+        transition:transform 0.3s;
+      ">
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+    </div>
   `;
+
+  // ✅ add history section if not exists
+  let detailsDiv = document.getElementById("detailsDiv");
+  if (!detailsDiv) {
+    detailsDiv = document.createElement("div");
+    detailsDiv.id = "detailsDiv";
+    detailsDiv.style.display = "none";
+    detailsDiv.style.marginTop = "10px";
+    detailsDiv.style.background = "purple";
+    detailsDiv.style.borderRadius = "8px";
+    detailsDiv.style.padding = "10px";
+    detailsDiv.style.fontSize = "16px";
+    detailsDiv.style.color = "#fff";
+    totalsDiv.parentElement.insertBefore(detailsDiv, totalsDiv.nextSibling);
+  }
+
+  // ✅ Save history (with time)
+  const currentTime = new Date().toLocaleTimeString();
+  historyData.push({
+    time: currentTime,
+    call: totalPositive.toFixed(2),
+    put: totalNegative.toFixed(2),
+    diff: totalDifference
+  });
+
+  // ✅ Update History Table
+  let tableHTML = `
+    <table style="width:100%; border-collapse:collapse; text-align:center; border-radius:8px; overflow:hidden;">
+      <thead>
+        <tr style="background:purple;">
+          <th style="padding:6px;">Time</th>
+          <th style="padding:6px;">Total Call</th>
+          <th style="padding:6px;">Total Put</th>
+          <th style="padding:6px;">Difference</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${historyData
+          .map(
+            (item) => `
+          <tr>
+            <td style="padding:6px;">${item.time}</td>
+            <td style="padding:6px; color:#00ff99;">${item.call}</td>
+            <td style="padding:6px; color:#ff4d4d;">${item.put}</td>
+            <td style="padding:6px; color:${
+              item.call >= Math.abs(item.put) ? "#03dd86ff" : "#ff4d4d"
+            };">${item.diff}</td>
+          </tr>`
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+  detailsDiv.innerHTML = tableHTML;
+
+  // ✅ Arrow toggle logic (only arrow controls open/close)
+  const toggleDetails = document.getElementById("toggleDetails");
+  toggleDetails.addEventListener("click", () => {
+    if (detailsDiv.style.display === "none") {
+      detailsDiv.style.display = "block";
+      toggleDetails.querySelector("i").className = "fa-solid fa-chevron-up";
+    } else {
+      detailsDiv.style.display = "none";
+      toggleDetails.querySelector("i").className = "fa-solid fa-chevron-down";
+    }
+  });
 }
 
 // --------------- Chart Rendering with Center Background Watermark ------------------------
@@ -416,7 +477,7 @@ function drawGraphOnly() {
       }
     },
     plugins: [
-      // 🌊 Background watermark plugin (centered)
+      //  Background watermark plugin (centered)
       {
         id: "centerWatermark",
         beforeDraw(chartInstance) {
@@ -435,7 +496,7 @@ function drawGraphOnly() {
           ctx.restore();
         }
       },
-      // 🏷️ Symbol name title
+      //  Symbol name title
       {
         id: "symbolTitle",
         beforeDraw(chartInstance) {
